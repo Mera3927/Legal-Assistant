@@ -146,7 +146,7 @@ You should see the n8n interface.
 3. **Import JSON**:
    - Click the three dots (⋮) in top right corner
    - Select "Import from File"
-   - Upload the `My workflow 2 (4).json` file
+   - Upload the `workflow.json` file
 4. Click "Save" and give it a name
 
 ---
