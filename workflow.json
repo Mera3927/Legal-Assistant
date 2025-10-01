@@ -1,0 +1,1160 @@
+{
+  "name": "Ultimo-Legal-Assistant",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "legal-files",
+          "mode": "list",
+          "cachedResultName": "legal-files"
+        },
+        "options": {
+          "clearNamespace": true
+        }
+      },
+      "id": "ae103677-c721-4a39-a3f1-b39c7fa27006",
+      "name": "Pinecone Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "position": [
+        -416,
+        -384
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "pineconeApi": {
+          "id": "yl4EZidO2Ejpapz8",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "ed6fb6b4-b22b-4ad9-b845-ef77ae07088f",
+      "name": "Embeddings Google Gemini",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "position": [
+        -448,
+        -160
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kdWnZfLOFpezwmWy",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "binaryMode": "specificField",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "file_name",
+                "value": "={{$data.name}}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "c9f8a257-ac98-43f9-a235-25ab75f004a0",
+      "name": "Default Data Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "position": [
+        -320,
+        -160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 100,
+        "options": {}
+      },
+      "id": "57de5c3a-c590-4159-afd3-ae9e74753684",
+      "name": "Recursive Character Text Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "position": [
+        -240,
+        48
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "legal_files",
+        "toolDescription": "Extract, contracts, legal policies and relevant regulatory documents here.",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "legal-files",
+          "mode": "list",
+          "cachedResultName": "legal-files"
+        },
+        "options": {}
+      },
+      "id": "966a722b-c33d-44b0-9eff-d3494475b136",
+      "name": "Pinecone Vector Store (Retrieval)",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "position": [
+        -544,
+        688
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "pineconeApi": {
+          "id": "yl4EZidO2Ejpapz8",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "a96ffb76-4d33-43d0-94e9-f398960355a3",
+      "name": "Embeddings Google Gemini (retrieval)",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "position": [
+        -464,
+        896
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kdWnZfLOFpezwmWy",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Chat with legal / contract documents",
+        "height": 80,
+        "width": 448,
+        "color": 4
+      },
+      "id": "969e8bda-9455-4d14-a57b-662d16e425ec",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -592,
+        304
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1AA6rS7eNTDXPHR896noBDoJyBeq3uvVy",
+          "mode": "list",
+          "cachedResultName": "legal_docs",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1AA6rS7eNTDXPHR896noBDoJyBeq3uvVy"
+        },
+        "event": "fileUpdated",
+        "options": {}
+      },
+      "id": "7f88ff24-7c0e-440c-b6c5-333baae54f14",
+      "name": "Google Drive File Updated",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "position": [
+        -896,
+        -80
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nC0Xh0EdJ4T2cHnJ",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1AA6rS7eNTDXPHR896noBDoJyBeq3uvVy",
+          "mode": "list",
+          "cachedResultName": "legal_docs",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1AA6rS7eNTDXPHR896noBDoJyBeq3uvVy"
+        },
+        "event": "fileCreated",
+        "options": {
+          "fileType": "all"
+        }
+      },
+      "id": "70a6caaa-ce0c-4e38-9826-7b34d93948de",
+      "name": "Google Drive File Created",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "position": [
+        -896,
+        -272
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nC0Xh0EdJ4T2cHnJ",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "id": "f8c6d1e1-0471-4db4-96dd-57d1c202e003",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        -896,
+        464
+      ],
+      "webhookId": "5f1c0c82-0ff9-40c7-9e2e-b1a96ffe24cd",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "content": "## Add legal docuemnts to vector store when updating or creating new documents in Google Drive",
+        "height": 96,
+        "width": 640,
+        "color": 3
+      },
+      "id": "2a041973-f0b2-4de0-a54b-b2c634ab47c2",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -816,
+        -544
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "id": "260a7e73-9ef5-4557-8b15-e5cee5115293",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "position": [
+        -672,
+        688
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "sY9DE9ulGKWKbgGN",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "cbc1ad7b-6e9d-4cc5-9c73-8753c24af3a0",
+      "name": "Google Gemini Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "position": [
+        1680,
+        896
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "sY9DE9ulGKWKbgGN",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n    \"answer_for_sales\": {\n      \"decision\": \"No, the standard payment term is 30 days after the invoice date. Extending to 90 days requires legal approval.\",\n      \"risk_level\": \"Medium\",\n      \"action\": \"Inform customer that standard payment terms are 30 days. If customer insists on 90 days, explain this requires formal legal review and approval.\"\n    },\n    \"rationale\": {\n      \"why_provision_exists\": \"The contract explicitly states invoices are due within 30 days to maintain cash flow.\",\n      \"impact_if_modified\": \"Extending to 90 days significantly impacts Ultimo's working capital and increases non-payment risk.\",\n      \"customer_explanation\": \"Standard business practice requires 30-day terms for operational efficiency.\",\n      \"escalation_trigger\": \"Any deviation from 30-day terms requires legal team review and approval.\"\n    },\n    \"citations\": [\n      {\n        \"document\": \"Master Agreement - SaaS v2021.6.1.pdf\",\n        \"page\": 5,\n        \"section\": \"4.2\",\n        \"topic\": \"Payment Terms\", \n        \"quote\": \"All invoices from Ultimo must be paid no later than thirty (30) calendar days after the invoice date.\"\n      },\n      {\n        \"document\": \"Master Agreement - SaaS v2021.6.1.pdf\",\n        \"page\": 3,\n        \"section\": \"5.2\",\n        \"topic\": \"Other Terms\", \n        \"quote\": \"All papers submited calendar days after the invoice date.\"\n      }\n    ]\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -256,
+        688
+      ],
+      "id": "cb3937b6-f23f-4c83-a0e8-fa703e3e98ac",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "command": "mkdir out"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2464,
+        336
+      ],
+      "id": "804bc2c5-aad6-460c-ad86-af5660779df9",
+      "name": "Execute Command",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2688,
+        272
+      ],
+      "id": "5763bd41-59b6-4b74-86e7-73a410ecfffb",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Code Node: JSON to Markdown Converter\nconst jsonResponse = $input.first().json.output || {};\nconst jsonQuestion = $('When chat message received').first().json.chatInput || {};\n\nfunction convertJSONToMarkdown(jsonData, jsonQ) {\n  let markdown = \"\";\n  \n  // Handle string input (parse if needed)\n  let parsedData;\n  if (typeof jsonData === 'string') {\n    try {\n      parsedData = JSON.parse(jsonData);\n    } catch (error) {\n      return jsonData; // Return as-is if not valid JSON\n    }\n  } else {\n    parsedData = jsonData;\n  }\n  \n  // Handle error responses\n  if (parsedData.error) {\n    return parsedData.error;\n  }\n\n  // Question\n  if (jsonQ) {\n    markdown += \"## Question\\n\";\n    markdown += jsonQ;\n  }\n\n  markdown += \"\\n\";\n\n  // AI Response\n  markdown += \"## AI Response\\n\";\n  \n  // 1. ANSWER FOR SALES Section\n  if (parsedData.answer_for_sales) {\n    markdown += \"#### ANSWER FOR SALES\\n\";\n    const sales = parsedData.answer_for_sales;\n    \n    if (sales.decision) {\n      markdown += sales.decision + \".\";\n    }\n    \n    if (sales.action) {\n      markdown += sales.action + \"\\n\";\n    }\n\n    if (sales.risk_level) {\n      markdown += `**Risk Level**: \\`${sales.risk_level}\\`\\n`;\n    }\n    \n    markdown += \"\\n\";\n  }\n  \n  // 2. RATIONALE Section\n  if (parsedData.rationale) {\n    markdown += \"#### RATIONALE\\n\";\n    const rationale = parsedData.rationale;\n    \n    let rationaleText = \"\";\n    \n    if (rationale.why_provision_exists) {\n      rationaleText += rationale.why_provision_exists + \" \";\n    }\n    \n    if (rationale.impact_if_modified) {\n      rationaleText += rationale.impact_if_modified + \" \";\n    }\n    \n    if (rationale.customer_explanation) {\n      rationaleText += rationale.customer_explanation + \" \";\n    }\n    \n    if (rationale.escalation_trigger) {\n      rationaleText += rationale.escalation_trigger;\n    }\n    \n    markdown += rationaleText.trim() + \"\\n\\n\";\n  }\n  \n  // 3. CITATIONS Section\n  if (parsedData.citations && Array.isArray(parsedData.citations)) {\n    markdown += \"#### CITATIONS\\n\";\n    \n    parsedData.citations.forEach((citation, index) => {\n      if (citation.document) {\n        markdown += `**${citation.document}**\\n`;\n        \n        let citationDetails = \"- \";\n        \n        if (citation.page) {\n          citationDetails += `Page ${citation.page}`;\n        }\n        \n        if (citation.section) {\n          if (citation.page) citationDetails += \", \";\n          citationDetails += `Section ${citation.section}`;\n        }\n        \n        if (citation.topic) {\n          if (citation.page || citation.section) citationDetails += \", \";\n          citationDetails += `Topic: ${citation.topic}`;\n        }\n        \n        if (citation.quote) {\n          citationDetails += `: *\"${citation.quote}\"*`;\n        }\n        \n        markdown += citationDetails + \"\\n\";\n        \n        if (index < parsedData.citations.length - 1) {\n          markdown += \"\\n\";\n        }\n      }\n    });\n  }\n  \n  return markdown.trim();\n}\n\n// Convert the JSON response to markdown\nconst markdownOutput = convertJSONToMarkdown(jsonResponse, jsonQuestion);\n\n// Log for debugging\nconsole.log(\"Converting JSON to Markdown...\");\nconsole.log(\"Input type:\", typeof jsonResponse);\nconsole.log(\"Output length:\", markdownOutput.length);\n\n// Return the markdown\nreturn [{\n  json: {\n    markdown: markdownOutput,\n    original_json: jsonResponse,\n    conversion_successful: markdownOutput.length > 0\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        464
+      ],
+      "id": "1157d838-6d8a-45fb-88cf-a8c9fa917102",
+      "name": "JSON to Markdown Converter"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Code Node: Flexible Contract Response Validation with Iteration Management\nconst rawResponse = $input.first().json.markdown || $input.first().json.output || \"\";\n// Ensure response is always a string\nconst response = typeof rawResponse === 'string' ? rawResponse : String(rawResponse || \"\");\nconst originalQuestion = $('When chat message received').first().json.chatInput || \"\";\nconst previousIteration = $input.first().json.iteration || 0;\nconst currentIteration = previousIteration + 1;\n\nfunction validateContractResponse(response, originalQuestion, iteration) {\n  const failures = [];\n  let score = 10;\n  \n  // Check if response is empty\n  if (!response || response.trim().length === 0) {\n    return {\n      passed: false,\n      score: 0,\n      failures: [{\n        issue: \"Empty response\",\n        location: \"Overall\",\n        fix: \"Generate a complete response with all required sections\"\n      }],\n      revision_needed: \"Complete response required\",\n      timestamp: new Date().toISOString(),\n      iteration: iteration,\n      response: response,\n      original_question: originalQuestion\n    };\n  }\n  \n  // 1. Check Required Sections - Very flexible patterns\n  const sections = {\n    'ANSWER FOR SALES': {\n      found: false,\n      content: \"\",\n      patterns: [\n        /answer\\s*for\\s*sales/i,\n        /sales\\s*answer/i,\n        /answer\\s*to\\s*sales/i\n      ]\n    },\n    'RATIONALE': {\n      found: false,\n      content: \"\",\n      patterns: [\n        /rationale/i,\n        /reasoning/i,\n        /explanation/i\n      ]\n    },\n    'CITATIONS': {\n      found: false,\n      content: \"\",\n      patterns: [\n        /citations?/i,\n        /references?/i,\n        /sources?/i\n      ]\n    }\n  };\n  \n  // Find sections with very flexible matching\n  const responseUpper = response.toUpperCase();\n  \n  // Check for ANSWER FOR SALES section\n  if (responseUpper.includes('ANSWER') && responseUpper.includes('SALES')) {\n    sections['ANSWER FOR SALES'].found = true;\n    // Extract content between this section and next section\n    const startMatch = response.match(/answer\\s*for\\s*sales[:\\s]*([\\s\\S]*?)(?=rationale|citations|$)/i);\n    if (startMatch) {\n      sections['ANSWER FOR SALES'].content = startMatch[1].trim();\n    }\n  }\n  \n  // Check for RATIONALE section\n  if (responseUpper.includes('RATIONALE')) {\n    sections['RATIONALE'].found = true;\n    const rationaleMatch = response.match(/rationale[:\\s]*([\\s\\S]*?)(?=citations|$)/i);\n    if (rationaleMatch) {\n      sections['RATIONALE'].content = rationaleMatch[1].trim();\n    }\n  }\n  \n  // Check for CITATIONS section\n  if (responseUpper.includes('CITATION')) {\n    sections['CITATIONS'].found = true;\n    const citationsMatch = response.match(/citations?[:\\s]*([\\s\\S]*?)$/i);\n    if (citationsMatch) {\n      sections['CITATIONS'].content = citationsMatch[1].trim();\n    }\n  }\n  \n  // Only fail if sections are completely missing\n  for (const sectionName in sections) {\n    if (!sections[sectionName].found) {\n      failures.push({\n        issue: `Missing section: ${sectionName}`,\n        location: 'Structure',\n        fix: `Add ${sectionName} section`\n      });\n      score -= 2;\n    }\n  }\n  \n  // 2. Validate ANSWER FOR SALES - Very general checks\n  if (sections['ANSWER FOR SALES'].found && sections['ANSWER FOR SALES'].content) {\n    const answerContent = sections['ANSWER FOR SALES'].content;\n    \n    // Just check if there's some mention of risk\n    const hasRiskIndication = /(low|medium|high|minimal|significant|major)/i.test(answerContent);\n    \n    if (!hasRiskIndication) {\n      failures.push({\n        issue: 'No risk assessment mentioned',\n        location: 'ANSWER FOR SALES',\n        fix: 'Include risk level (Low/Medium/High or similar)'\n      });\n      score -= 0.5;\n    }\n    \n    // Check if there's any directive (very flexible)\n    const hasAnyDirective = answerContent.length > 20; // Just needs some content\n    \n    if (!hasAnyDirective) {\n      failures.push({\n        issue: 'Answer too brief',\n        location: 'ANSWER FOR SALES',\n        fix: 'Provide more detail in the answer'\n      });\n      score -= 1;\n    }\n    \n    // Very generous length check\n    const wordCount = answerContent.split(/\\s+/).filter(w => w.length > 0).length;\n    if (wordCount > 150) {\n      failures.push({\n        issue: `Answer might be too long (${wordCount} words)`,\n        location: 'ANSWER FOR SALES',\n        fix: 'Consider making answer more concise'\n      });\n      score -= 0.25;\n    }\n  }\n  \n  // 3. Validate RATIONALE - General checks\n  if (sections['RATIONALE'].found && sections['RATIONALE'].content) {\n    const rationaleContent = sections['RATIONALE'].content;\n    \n    // Just check it's not too long or too short\n    const sentences = rationaleContent.split(/[.!?]+/).filter(s => s.trim().length > 5);\n    \n    if (sentences.length > 6) {\n      failures.push({\n        issue: `Rationale might be lengthy (${sentences.length} sentences)`,\n        location: 'RATIONALE',\n        fix: 'Consider keeping to 4-5 sentences'\n      });\n      score -= 0.5;\n    }\n    \n    if (rationaleContent.length < 30) {\n      failures.push({\n        issue: 'Rationale too brief',\n        location: 'RATIONALE',\n        fix: 'Add more explanation'\n      });\n      score -= 1;\n    }\n  }\n  \n  // 4. Validate CITATIONS - Very flexible\n  if (sections['CITATIONS'].found && sections['CITATIONS'].content) {\n    const citationsContent = sections['CITATIONS'].content;\n    \n    // Look for any kind of list items (-, *, •, numbers, etc.)\n    const lines = citationsContent.split('\\n').filter(line => line.trim().length > 0);\n    const citationLines = lines.filter(line => {\n      const trimmed = line.trim();\n      return trimmed.match(/^[-*•\\d]/); // Starts with any list marker\n    });\n    \n    if (citationLines.length === 0 && lines.length > 0) {\n      // Maybe citations are just in paragraph form, that's okay\n      citationLines.push(...lines);\n    }\n    \n    if (citationLines.length === 0) {\n      failures.push({\n        issue: 'No citations found',\n        location: 'CITATIONS',\n        fix: 'Add at least one citation or reference'\n      });\n      score -= 2;\n    } else {\n      // For each citation, just check for basic elements\n      citationLines.forEach((line, idx) => {\n        const lineNum = idx + 1;\n        \n        // Very flexible checks\n        const hasDocReference = /\\.(pdf|doc|docx|txt)|document|agreement|contract|master/i.test(line);\n        const hasLocation = /page|section|clause|article|paragraph|p\\.|§/i.test(line);\n        // Better quote detection - more flexible patterns\n        const hasQuote = (\n          /\"[^\"]*\"/g.test(line) ||           // Straight double quotes\n          /'[^']*'/g.test(line) ||           // Straight single quotes  \n          /\"[^\"]*\"/g.test(line) ||           // Curly double quotes\n          /'[^']*'/g.test(line) ||           // Curly single quotes\n          /\\*\"[^\"]*\"\\*/g.test(line) ||       // Quotes in italic markdown\n          line.includes('\"') && line.includes('\"') // Any opening and closing quotes\n        );\n        \n        console.log(`Line: ${line}`);\n        console.log(`Has quote: ${hasQuote}`);\n        \n        if (!hasQuote && line.length < 20) {\n          // Only suggest quotes if the citation is very short\n          failures.push({\n            issue: `Citation ${lineNum} might benefit from a quote`,\n            location: 'CITATIONS',\n            fix: 'Consider adding a relevant quote if applicable'\n          });\n          score -= 0.1;\n        }\n      });\n    }\n  }\n  \n  // 5. Check for \"not found\" response - keep this strict\n  if (response.includes(\"cannot find\") || response.includes(\"not found\")) {\n    if (response.includes(\"contract\") || response.includes(\"document\")) {\n      // It's a valid \"not found\" response\n      return {\n        passed: true,\n        score: 10,\n        failures: [],\n        revision_needed: null,\n        timestamp: new Date().toISOString(),\n        iteration: iteration,\n        original_question: originalQuestion,\n        response: response,\n        summary: \"Valid 'not found' response\"\n      };\n    }\n  }\n  \n  // Calculate final score - be more lenient\n  // score = Math.max(0, Math.min(10, score));\n  \n  // More lenient passing criteria\n  const passed = score >= 9.5 && failures.filter(f => !f.issue.includes('might')).length === 0;\n  \n  // Check if max iterations reached\n  const maxIterations = 3;\n  if (!passed && iteration >= maxIterations) {\n    return {\n      passed: false,\n      score: score,\n      failures: failures,\n      revision_needed: \"MAX ITERATIONS REACHED - Proceeding to human review\",\n      timestamp: new Date().toISOString(),\n      iteration: iteration,\n      original_question: originalQuestion,\n      response: response,\n      summary: `Max iterations (${maxIterations}) reached`,\n      force_proceed: true\n    };\n  }\n  \n  return {\n    passed: passed,\n    score: score,\n    failures: failures,\n    revision_needed: passed ? null : \"Minor improvements suggested\",\n    timestamp: new Date().toISOString(),\n    iteration: iteration,\n    original_question: originalQuestion,\n    response: response,\n    summary: passed ? \"Response acceptable\" : `${failures.length} suggestions (iteration ${iteration}/${maxIterations})`,\n    force_proceed: false\n  };\n}\n\n// Execute validation with iteration tracking\nconst result = validateContractResponse(response, originalQuestion, currentIteration);\n\n// Log for debugging\nconsole.log(`Validation iteration ${currentIteration}: Score ${result.score}/10`);\nconsole.log(`Response type: ${typeof response}, Length: ${response.length}`);\n\n// Return result for n8n\nreturn [{\n  json: {\n    ...result,\n    next_iteration: currentIteration + 1\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        336,
+        464
+      ],
+      "id": "ce7bd136-e908-4b28-8b57-18a960fd3e4d",
+      "name": "AI response manual proofreader"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7a9e0e96-e19f-4960-be95-59914d876594",
+              "leftValue": "={{ $json.passed }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "d616b419-7547-49ab-8514-60cf352a98d7",
+              "leftValue": "={{ $json.revision_needed }}",
+              "rightValue": "MAX ITERATIONS REACHED",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        384
+      ],
+      "id": "ae6ee553-e248-4b05-b591-191fe70a6692",
+      "name": "Proofread passed/ failed",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "let result = '';\n\ntry {\n  result = $('Mail sender (Human in the Middle)').item?.json?.data?.Reasons || '';\n} catch {\n  result = '';\n}\n\nreturn [{ json: { guidance: result } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        592
+      ],
+      "id": "176755b5-4c26-40c8-820b-1721e43179a0",
+      "name": "Human message availability checker",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "mode": "markdownToHtml",
+        "markdown": "={{ $json.response }}",
+        "destinationKey": "response_final",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        784,
+        320
+      ],
+      "id": "7f81def3-9eb6-4ca3-8229-e290b67a7bfa",
+      "name": "Markdown to HTML converter"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "mera3927@gmail.com",
+        "subject": "Approval Required for AI response",
+        "message": "=Hi, I need your approval to publish the response generated by the AI considering the given question.\n\n{{ $json.response_final }}",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Approve / Reject",
+              "fieldType": "radio",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Approve"
+                  },
+                  {
+                    "option": "Reject"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Reasons",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1008,
+        320
+      ],
+      "id": "a489c591-a835-42ec-a1f8-bd3d6a93f28b",
+      "name": "Mail sender (Human in the Middle)",
+      "webhookId": "96697204-a5b5-4a97-862d-74dd011129c5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AyDxLyk496BqaB8w",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7a9e0e96-e19f-4960-be95-59914d876594",
+              "leftValue": "={{ $json.data['Approve / Reject'] }}",
+              "rightValue": "Approve",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1232,
+        320
+      ],
+      "id": "afc26e17-cccd-4b94-b37b-d910acc409bd",
+      "name": "Human decision (approve/ reject)",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a Contract Legal Assistant for sales team. Use ONLY \"vector_store_retrieval\" tool.\n\n## MANDATORY PROCESS:\n\nSTEP 1: Search\n**CRITICAL: Conduct COMPREHENSIVE searches to find ALL relevant contract information**\n- Use vector_store_retrieval with multiple different keywords/phrases related to the query\n- Search broadly first, then narrow down with specific terms  \n- Continue searching until you have identified ALL relevant contract provisions\n- **DO NOT PROCEED to Step 2 until confident all possible citations are found**\n- **Strictly find the team that need to be eacalated regarding the problem. [Legal, CFO/Finance, Support Team, Support Team, Service Team, Sales Ops] based on the following rules\n\n##  RULES:\n\n**[Legal]\n\nHandles contract governance and acceptance of third-party terms, changes to limitation of liability, and security/privacy liability carve-outs. They assess legal and regulatory risk, draft/approve clause language, and coordinate with Security/Privacy for breach-related commitments.\n\n**[CFO / Finance]\n\nOwns commercial terms that impact pricing, revenue, and cash flow: indexation mechanics (e.g., SPPI), extended payment terms, and termination-for-convenience exposure. They evaluate financial risk and revenue impact, set approval thresholds, and partner with Legal to translate approvals into contract wording.\n\n**[Support Team]\n\nCovers support operating model and SLAs, including 24/7 coverage across tiers, response and restoration targets, and any uplift pricing or staffing implications. They validate feasibility, define service levels, and confirm how commitments map to existing processes.\n\n**[Services Team]\n\nFocuses on professional services warranties and acceptance criteria—scope, duration, remedies, and exclusions. They balance delivery practicality with customer assurances, and work with Legal to formalize language without overcommitting.\n\n**[Sales Ops]\n\nOwns operational/billing processes tied to usage changes such as storage capacity notifications. They design the notification workflow, align system triggers and invoicing, and coordinate cross-functionally to ensure clear, proactive customer communication.\n\nSTEP 2: Extract Metadata\nFrom ALL vector store responses, extract:\n- Document filename\n- Page number (actual number, not placeholder)\n- Section name (actual name, not placeholder) \n- Topic/heading name\n- Quote text\n**Verify each citation is complete and accurate before proceeding**\n\nSTEP 3: Output JSON Response\nProvide response in EXACT JSON format below:\n\n```json\n{\n  \"answer_for_sales\": {\n    \"decision\": \"[Yes/No/Conditional answer]\",\n    \"risk_level\": \"[Low/Medium/High]\",\n    \"action\": \"[Exact action sales should take]\"\n  },\n  \"rationale\": {\n    \"why_provision_exists\": \"[Why contract provision exists]\",\n    \"impact_if_modified\": \"[Business impact if terms change]\", \n    \"customer_explanation\": \"[How to explain to customer]\",\n    \"escalation_trigger\": \"[Legal/CFO or Finance/Support Team/Searvice Team/Sales Ops]\"\n  },\n  \"citations\": [\n    {\n      \"document\": \"[Exact filename.pdf]\",\n      \"page\": [actual page number],\n      \"section\": \"[actual section number]\",\n      \"topic\": \"[actual section topic/heading]\",\n      \"quote\": \"[exact quote from document]\"\n    }\n  ]\n}"
+        }
+      },
+      "id": "d2d9c6a5-0dac-4035-893b-55d9e6d3db2c",
+      "name": "AI Generative Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -544,
+        464
+      ],
+      "typeVersion": 1.7
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are tasked with editing and improving the following content by strictly using the \"vector_store_retrieval1\" tool:\n\nCONTENT TO EDIT:\n{{ $('AI response manual proofreader').item.json.response }}\nREQUIRED FIXES:\nApply ALL of the following structural fixes if any exits from the validation results:\n{{ $('AI response manual proofreader').item.json.failures }}\nADDITIONAL GUIDANCE:\n{{ $json.guidance }}\nINSTRUCTIONS:\n1. Read through the content carefully\n2. For each failure listed, implement the exact fix specified\n3. Ensure all missing sections are added in the appropriate locations\n4. Maintain the original content quality while addressing all structural issues\n5. Return the complete, corrected version\nOUTPUT REQUIREMENTS:\n- Provide the fully edited content\n- Ensure all required sections are present\n- Maintain consistent formatting and structure",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are tasked with editing and improving the following content by strictly using the \"vector_store_retrieval1\" tool."
+        }
+      },
+      "id": "7dc9d779-508f-474f-a255-a21294fe6ca2",
+      "name": "AI Edit Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1824,
+        672
+      ],
+      "typeVersion": 1.7,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "2fd473a5-5a32-46a9-82e0-a96767288537",
+      "name": "Google Gemini Chat Model 2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "position": [
+        -176,
+        896
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "6otuZRuof5o3oZ9G",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let htmlContent = $('Markdown to HTML converter').first().json.response_final;\n\n// Add HTML structure if needed\nif (!htmlContent.includes('<html>')) {\n  htmlContent = `<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <style>\n        body { font-family: Arial; margin: 40px; line-height: 1.6; }\n        h1, h2, h3 { color: #333; }\n    </style>\n</head>\n<body>${htmlContent}</body>\n</html>`;\n}\n\nreturn [{\n  json: {\n    source: htmlContent,\n    format: 'A4',                 \n    margin: '20px',               \n    disable_backgrounds: false,   \n    landscape: false,             \n    delay: 1000                   \n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        272
+      ],
+      "id": "88a1312e-5fb7-40e5-8415-5827b67d10ff",
+      "name": "pdf formatter"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.pdfshift.io/v3/convert/pdf",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1968,
+        272
+      ],
+      "id": "4420f483-5ba1-4b7e-8ffe-a5c9611a40a4",
+      "name": "pdf generator",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "bchSl34jquwVUCMX",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const binaryData = $input.all()[0].binary;\nif (!binaryData?.data) {\n  return [{\n    json: {\n      success: false,\n      error: 'No PDF binary data found'\n    }\n  }];\n}\n\n// Generate unique filename\nconst timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);\nconst uniqueId = Math.random().toString(36).substring(2, 8);\nconst fileName = `pdf_${timestamp}_${uniqueId}.pdf`;\n\nreturn [{\n  json: {\n    success: true,\n    message: $('Markdown to HTML converter').first().json.response,\n    fileName: fileName,\n    filePath: `out/${fileName}`,\n    timestamp: timestamp,\n    fullPath: `${process.cwd()}/out/${fileName}`\n  },\n  binary: {\n    data: {\n      data: binaryData.data.data,\n      mimeType: 'application/pdf',\n      fileName: fileName,\n      fileExtension: 'pdf'\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2912,
+        272
+      ],
+      "id": "3e7e8b29-0a8b-4fd0-80d4-a99d3cddceda",
+      "name": "output formatter",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $json.fullPath }}",
+        "options": {
+          "append": true
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        3136,
+        272
+      ],
+      "id": "bfafd216-23e9-4d19-ab9c-a83851f1562c",
+      "name": "save output pdf",
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "fileName": "={{ $json.name }}"
+        }
+      },
+      "id": "9081f9e8-6215-4f60-82a8-6e34aaa7eb70",
+      "name": "Download File From Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        -672,
+        -176
+      ],
+      "typeVersion": 3,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nC0Xh0EdJ4T2cHnJ",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "legal_files",
+        "toolDescription": "Extract, contracts, legal policies and relevant regulatory documents here.",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "legal-files",
+          "mode": "list",
+          "cachedResultName": "legal-files"
+        },
+        "options": {}
+      },
+      "id": "15b5c063-b11b-447a-8a77-ebc5b799ad8d",
+      "name": "Pinecone Vector Store (Retrieval)1",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "position": [
+        1808,
+        896
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "pineconeApi": {
+          "id": "yl4EZidO2Ejpapz8",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "9dbc056e-01f7-4cc9-a62c-910c6e53a528",
+      "name": "Embeddings Google Gemini (retrieval)1",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "position": [
+        1888,
+        1104
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kdWnZfLOFpezwmWy",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n    \"answer_for_sales\": {\n      \"decision\": \"No, the standard payment term is 30 days after the invoice date. Extending to 90 days requires legal approval.\",\n      \"risk_level\": \"Medium\",\n      \"action\": \"Inform customer that standard payment terms are 30 days. If customer insists on 90 days, explain this requires formal legal review and approval.\"\n    },\n    \"rationale\": {\n      \"why_provision_exists\": \"The contract explicitly states invoices are due within 30 days to maintain cash flow.\",\n      \"impact_if_modified\": \"Extending to 90 days significantly impacts Ultimo's working capital and increases non-payment risk.\",\n      \"customer_explanation\": \"Standard business practice requires 30-day terms for operational efficiency.\",\n      \"escalation_trigger\": \"Any deviation from 30-day terms requires legal team review and approval.\"\n    },\n    \"citations\": [\n      {\n        \"document\": \"Master Agreement - SaaS v2021.6.1.pdf\",\n        \"page\": 15,\n        \"section\": \"4.2\",\n        \"topic\": \"Payment Terms\", \n        \"quote\": \"All invoices from Ultimo must be paid no later than thirty (30) calendar days after the invoice date.\"\n      }\n    ]\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2096,
+        896
+      ],
+      "id": "b6201389-8fa1-491c-b640-e50792fd0293",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "a4eb13a1-669e-4b2b-bf27-0aef7f2c4e14",
+      "name": "Google Gemini Chat Model ",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "position": [
+        2176,
+        1104
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "6otuZRuof5o3oZ9G",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Code Node: JSON to Markdown Converter\nconst jsonResponse = $input.first().json.output || {};\nconst jsonQuestion = $('When chat message received').first().json.chatInput || {};\n\nfunction convertJSONToMarkdown(jsonData, jsonQ) {\n  let markdown = \"\";\n  \n  // Handle string input (parse if needed)\n  let parsedData;\n  if (typeof jsonData === 'string') {\n    try {\n      parsedData = JSON.parse(jsonData);\n    } catch (error) {\n      return jsonData; // Return as-is if not valid JSON\n    }\n  } else {\n    parsedData = jsonData;\n  }\n  \n  // Handle error responses\n  if (parsedData.error) {\n    return parsedData.error;\n  }\n\n  // Question\n  if (jsonQ) {\n    markdown += \"## Question\\n\";\n    markdown += jsonQ;\n  }\n\n  markdown += \"\\n\";\n\n  // AI Response\n  markdown += \"## AI Response\\n\";\n  \n  // 1. ANSWER FOR SALES Section\n  if (parsedData.answer_for_sales) {\n    markdown += \"#### ANSWER FOR SALES\\n\";\n    const sales = parsedData.answer_for_sales;\n    \n    if (sales.decision) {\n      markdown += sales.decision + \".\";\n    }\n    \n    if (sales.action) {\n      markdown += sales.action + \"\\n\";\n    }\n\n    if (sales.risk_level) {\n      markdown += `**Risk Level**: \\`${sales.risk_level}\\`\\n`;\n    }\n    \n    markdown += \"\\n\";\n  }\n  \n  // 2. RATIONALE Section\n  if (parsedData.rationale) {\n    markdown += \"#### RATIONALE\\n\";\n    const rationale = parsedData.rationale;\n    \n    let rationaleText = \"\";\n    \n    if (rationale.why_provision_exists) {\n      rationaleText += rationale.why_provision_exists + \" \";\n    }\n    \n    if (rationale.impact_if_modified) {\n      rationaleText += rationale.impact_if_modified + \" \";\n    }\n    \n    if (rationale.customer_explanation) {\n      rationaleText += rationale.customer_explanation + \" \";\n    }\n    \n    if (rationale.escalation_trigger) {\n      rationaleText += rationale.escalation_trigger;\n    }\n    \n    markdown += rationaleText.trim() + \"\\n\\n\";\n  }\n  \n  // 3. CITATIONS Section\n  if (parsedData.citations && Array.isArray(parsedData.citations)) {\n    markdown += \"#### CITATIONS\\n\";\n    \n    parsedData.citations.forEach((citation, index) => {\n      if (citation.document) {\n        markdown += `**${citation.document}**\\n`;\n        \n        let citationDetails = \"- \";\n        \n        if (citation.page) {\n          citationDetails += `Page ${citation.page}`;\n        }\n        \n        if (citation.section) {\n          if (citation.page) citationDetails += \", \";\n          citationDetails += `Section ${citation.section}`;\n        }\n        \n        if (citation.topic) {\n          if (citation.page || citation.section) citationDetails += \", \";\n          citationDetails += `Topic: ${citation.topic}`;\n        }\n        \n        if (citation.quote) {\n          citationDetails += `: *\"${citation.quote}\"*`;\n        }\n        \n        markdown += citationDetails + \"\\n\";\n        \n        if (index < parsedData.citations.length - 1) {\n          markdown += \"\\n\";\n        }\n      }\n    });\n  }\n  \n  return markdown.trim();\n}\n\n// Convert the JSON response to markdown\nconst markdownOutput = convertJSONToMarkdown(jsonResponse, jsonQuestion);\n\n// Log for debugging\nconsole.log(\"Converting JSON to Markdown...\");\nconsole.log(\"Input type:\", typeof jsonResponse);\nconsole.log(\"Output length:\", markdownOutput.length);\n\n// Return the markdown\nreturn [{\n  json: {\n    markdown: markdownOutput,\n    original_json: jsonResponse,\n    conversion_successful: markdownOutput.length > 0\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2208,
+        672
+      ],
+      "id": "2789ada1-dfa7-4a2a-922b-61bcde083c76",
+      "name": "JSON to Markdown Converter1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Generative Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive File Created": {
+      "main": [
+        [
+          {
+            "node": "Download File From Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive File Updated": {
+      "main": [
+        [
+          {
+            "node": "Download File From Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Generative Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store (Retrieval)": {
+      "ai_vectorStore": [
+        []
+      ],
+      "ai_tool": [
+        [
+          {
+            "node": "AI Generative Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini (retrieval)": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store (Retrieval)",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Edit Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Generative Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "output formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON to Markdown Converter": {
+      "main": [
+        [
+          {
+            "node": "AI response manual proofreader",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI response manual proofreader": {
+      "main": [
+        [
+          {
+            "node": "Proofread passed/ failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Proofread passed/ failed": {
+      "main": [
+        [
+          {
+            "node": "Markdown to HTML converter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Human message availability checker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Human message availability checker": {
+      "main": [
+        [
+          {
+            "node": "AI Edit Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown to HTML converter": {
+      "main": [
+        [
+          {
+            "node": "Mail sender (Human in the Middle)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mail sender (Human in the Middle)": {
+      "main": [
+        [
+          {
+            "node": "Human decision (approve/ reject)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Human decision (approve/ reject)": {
+      "main": [
+        [
+          {
+            "node": "pdf formatter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Human message availability checker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Generative Agent": {
+      "main": [
+        [
+          {
+            "node": "JSON to Markdown Converter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Edit Agent": {
+      "main": [
+        [
+          {
+            "node": "JSON to Markdown Converter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model 2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pdf formatter": {
+      "main": [
+        [
+          {
+            "node": "pdf generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pdf generator": {
+      "main": [
+        [
+          {
+            "node": "Execute Command",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output formatter": {
+      "main": [
+        [
+          {
+            "node": "save output pdf",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "main": [
+        []
+      ]
+    },
+    "Download File From Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini (retrieval)1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store (Retrieval)1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store (Retrieval)1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Edit Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model ": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Edit Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON to Markdown Converter1": {
+      "main": [
+        [
+          {
+            "node": "AI response manual proofreader",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Colombo",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "629d18dd-ec3a-4119-b764-031c99c62d80",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b0de8e872e058c928d3415e08d6395ba33fe9478ef84815673a3c7fa3632e7c3"
+  },
+  "id": "soXTPBbRLymqVhlZ",
+  "tags": []
+}
